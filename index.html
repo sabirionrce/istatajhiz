@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>پروپوزال محتوا | ایستا تجهیز</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800;900&display=swap');
+
+:root {
+  --bg:       #080c18;
+  --bg2:      #0c1224;
+  --bg3:      #101828;
+  --yellow:   #f0c330;
+  --yellow2:  #ffe066;
+  --ya:       rgba(240,195,48,0.13);
+  --yb:       rgba(240,195,48,0.28);
+  --blue:     #1e3a6e;
+  --blue2:    #2a4fa0;
+  --accent2:  #4f8ef7;
+  --white:    #f0f4ff;
+  --gray:     #7a85a8;
+  --light:    #b8c3e0;
+  --red:      #e05555;
+}
+
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth}
+body{font-family:'Vazirmatn',sans-serif;background:var(--bg);color:var(--white);overflow-x:hidden;line-height:1.7}
+
+/* BG CANVAS */
+#bg-canvas{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;opacity:0.7}
+.wrap{position:relative;z-index:1}
+
+/* NAV */
+.nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:14px 20px;
+  background:rgba(8,12,24,0.82);
+  backdrop-filter:blur(16px);
+  border-bottom:1px solid rgba(240,195,48,0.1);
+}
+.nav-logo{font-size:13px;font-weight:800;color:var(--yellow);letter-spacing:0.02em}
+.nav-pill{font-size:9px;font-weight:700;background:var(--ya);border:1px solid var(--yb);color:var(--yellow);padding:4px 12px;border-radius:100px;letter-spacing:.08em}
+
+/* PROGRESS */
+#prog{position:fixed;top:0;left:0;height:2px;background:linear-gradient(to right,var(--yellow),var(--yellow2));z-index:200;box-shadow:0 0 10px var(--yb);transition:width .1s linear}
+
+/* HERO */
+.hero{
+  min-height:100svh;
+  display:flex;flex-direction:column;justify-content:center;align-items:center;
+  text-align:center;padding:100px 24px 72px;
+  position:relative;overflow:hidden;
+}
+.hero-badge{
+  display:inline-flex;align-items:center;gap:8px;
+  background:var(--ya);border:1px solid var(--yb);
+  border-radius:100px;padding:6px 18px;
+  font-size:10px;font-weight:700;color:var(--yellow);letter-spacing:.1em;
+  margin-bottom:24px;animation:fd .8s ease both;
+}
+.pulse{width:6px;height:6px;border-radius:50%;background:var(--yellow);animation:pulse 1.4s ease infinite}
+.hero h1{font-size:clamp(30px,10vw,46px);font-weight:900;line-height:1.15;letter-spacing:-.02em;animation:fd .9s .1s ease both}
+.hero h1 em{color:var(--yellow);font-style:normal}
+.hero-sub{font-size:13px;color:var(--gray);margin-top:14px;margin-bottom:36px;animation:fd 1s .2s ease both}
+
+.hero-chips{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;animation:fd 1.1s .3s ease both;max-width:360px;width:100%}
+.chip{
+  background:var(--bg2);border:1px solid rgba(240,195,48,0.18);
+  border-radius:12px;padding:11px 14px;text-align:center;flex:1;min-width:80px;
+}
+.chip .n{font-size:18px;font-weight:900;color:var(--yellow);display:block}
+.chip .l{font-size:9px;color:var(--gray);margin-top:2px}
+
+.scroll-hint{position:absolute;bottom:28px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:5px;animation:fd 2s 1.2s ease both}
+.scroll-hint span{font-size:9px;color:var(--gray);letter-spacing:.12em}
+.scroll-line{width:1px;height:28px;background:linear-gradient(to bottom,var(--yellow),transparent);animation:sline 1.8s ease infinite}
+
+/* DIVIDER */
+.div{height:1px;background:linear-gradient(to right,transparent,rgba(240,195,48,.2),transparent);margin:0 20px}
+
+/* SECTIONS */
+.sec{padding:60px 22px}
+.sec.alt{background:var(--bg2)}
+.sec.alt2{background:var(--bg3)}
+
+.eyebrow{font-size:9px;font-weight:800;color:var(--yellow);letter-spacing:.18em;text-transform:uppercase;margin-bottom:10px}
+.sec-title{font-size:clamp(20px,6.5vw,28px);font-weight:800;line-height:1.2;margin-bottom:12px}
+.sec-title em{color:var(--yellow);font-style:normal}
+.sec-body{font-size:13px;color:var(--light);line-height:1.85}
+
+/* REVEAL */
+.rv{opacity:0;transform:translateY(20px);transition:opacity .55s ease,transform .55s ease}
+.rv.on{opacity:1;transform:translateY(0)}
+
+/* PROBLEM CARDS */
+.prob-grid{display:flex;flex-direction:column;gap:12px;margin-top:26px}
+.prob-card{
+  background:var(--bg3);
+  border:1px solid rgba(240,195,48,.1);
+  border-right:3px solid var(--yellow);
+  border-radius:14px;padding:18px;
+  position:relative;overflow:hidden;
+}
+.prob-card::after{content:'';position:absolute;top:-20px;right:-20px;width:70px;height:70px;background:radial-gradient(circle,rgba(240,195,48,.07),transparent 70%);border-radius:50%}
+.prob-tag{display:inline-block;background:rgba(224,85,85,.13);border:1px solid rgba(224,85,85,.28);color:#f87171;font-size:9px;font-weight:700;padding:3px 10px;border-radius:100px;margin-bottom:8px;letter-spacing:.05em}
+.prob-title{font-size:13px;font-weight:700;margin-bottom:5px}
+.prob-body{font-size:12px;color:var(--gray);line-height:1.75}
+
+/* COMPARE BARS */
+.compare-wrap{margin-top:28px;display:flex;flex-direction:column;gap:18px}
+.cmp-row{}
+.cmp-label{display:flex;justify-content:space-between;margin-bottom:6px}
+.cmp-label span{font-size:11px;color:var(--light)}
+.cmp-label strong{font-size:11px;color:var(--yellow);font-weight:700}
+.cmp-track{height:6px;background:rgba(255,255,255,.06);border-radius:99px;overflow:hidden}
+.cmp-fill{height:100%;border-radius:99px;background:linear-gradient(to left,var(--yellow),var(--yellow2));transform-origin:right;animation:grow 1.4s ease both}
+.cmp-fill.blue-fill{background:linear-gradient(to left,var(--accent2),#1e3a6e)}
+.cmp-note{font-size:10px;color:var(--gray);margin-top:5px}
+
+/* FUNNEL */
+.funnel{margin-top:28px;display:flex;flex-direction:column;gap:0}
+.funnel-step{
+  display:flex;align-items:center;gap:12px;
+  padding:15px 16px;
+  border-radius:14px;
+  margin-bottom:4px;
+  position:relative;overflow:hidden;
+}
+.funnel-step.f1{background:linear-gradient(135deg,#1a1400,#2a2000);border:1px solid rgba(240,195,48,.25)}
+.funnel-step.f2{background:linear-gradient(135deg,#0e1a30,#122040);border:1px solid rgba(79,142,247,.2)}
+.funnel-step.f3{background:linear-gradient(135deg,#0a1a14,#0e2a1e);border:1px solid rgba(74,222,128,.2)}
+.funnel-step.f4{background:linear-gradient(135deg,#1a0e28,#220e38);border:1px solid rgba(167,139,250,.2)}
+.funnel-pct{font-size:22px;font-weight:900;min-width:52px;line-height:1}
+.funnel-step.f1 .funnel-pct{color:var(--yellow)}
+.funnel-step.f2 .funnel-pct{color:var(--accent2)}
+.funnel-step.f3 .funnel-pct{color:#4ade80}
+.funnel-step.f4 .funnel-pct{color:#a78bfa}
+.funnel-info{}
+.funnel-name{font-size:13px;font-weight:700;margin-bottom:2px}
+.funnel-desc{font-size:11px;color:var(--gray)}
+.funnel-bar{position:absolute;bottom:0;right:0;height:2px;background:currentColor;opacity:.4;border-radius:99px}
+
+/* MODELS */
+.model-list{display:flex;flex-direction:column;gap:12px;margin-top:26px}
+.model-card{
+  background:var(--bg3);border:1px solid rgba(240,195,48,.08);
+  border-radius:16px;padding:20px;overflow:hidden;position:relative;
+  transition:border-color .25s;
+}
+.model-card:active{border-color:var(--yb)}
+.model-num{font-size:9px;font-weight:800;color:var(--yellow);letter-spacing:.18em;text-transform:uppercase;display:block;margin-bottom:8px}
+.model-title{font-size:15px;font-weight:800;margin-bottom:10px}
+.hook-box{
+  background:rgba(240,195,48,.05);border-right:2px solid var(--yellow);
+  border-radius:8px;padding:10px 14px;margin-bottom:12px;
+}
+.hook-bad{font-size:11px;color:#f87171;text-decoration:line-through;margin-bottom:6px;display:flex;gap:6px;align-items:flex-start}
+.hook-good{font-size:12px;color:var(--yellow);font-weight:600;display:flex;gap:6px;align-items:flex-start}
+.tags{display:flex;flex-wrap:wrap;gap:6px}
+.tag{font-size:9px;font-weight:700;padding:4px 10px;border-radius:100px;letter-spacing:.04em}
+.ty{background:var(--ya);border:1px solid var(--yb);color:var(--yellow)}
+.tb{background:rgba(79,142,247,.1);border:1px solid rgba(79,142,247,.22);color:#93c5fd}
+.tp{background:rgba(167,139,250,.1);border:1px solid rgba(167,139,250,.22);color:#c4b5fd}
+.tg{background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.22);color:#86efac}
+
+/* PRODUCTION */
+.prod-grid{display:flex;flex-direction:column;gap:12px;margin-top:26px}
+.prod-card{border-radius:16px;padding:20px;overflow:hidden;position:relative}
+.prod-card.pc1{background:linear-gradient(135deg,#0f1628,#1a2a4a);border:1px solid rgba(79,142,247,.22)}
+.prod-card.pc2{background:linear-gradient(135deg,#140f28,#2a1a4a);border:1px solid rgba(167,139,250,.22)}
+.prod-card.pc3{background:linear-gradient(135deg,#1a1408,#2e2010);border:1px solid rgba(240,195,48,.22)}
+.prod-icon{font-size:26px;margin-bottom:10px}
+.prod-title{font-size:14px;font-weight:800;margin-bottom:0}
+
+/* CALENDAR */
+.cal{margin-top:28px;display:flex;flex-direction:column;gap:20px}
+.cal-week{}
+.cal-wlabel{
+  font-size:9px;font-weight:800;color:var(--yellow);letter-spacing:.15em;text-transform:uppercase;
+  padding:8px 0;border-bottom:1px solid rgba(240,195,48,.15);margin-bottom:14px;
+  display:flex;align-items:center;gap:8px;
+}
+.cal-wlabel::before{content:'';width:4px;height:14px;background:var(--yellow);border-radius:99px;display:block}
+.cal-item{
+  display:flex;gap:12px;align-items:flex-start;
+  padding:12px 0;border-bottom:1px solid rgba(255,255,255,.04);
+}
+.cal-num{min-width:28px;font-size:11px;font-weight:700;color:var(--yellow);padding-top:2px}
+.cal-topic{font-size:13px;font-weight:600;margin-bottom:2px}
+.cal-hint{font-size:11px;color:var(--gray)}
+
+/* STORY BOX */
+.story-box{
+  background:linear-gradient(135deg,#0e1a30,#122040);
+  border:1px solid rgba(79,142,247,.2);
+  border-radius:14px;padding:18px;margin-top:20px;
+}
+.story-title{font-size:12px;font-weight:700;color:var(--accent2);margin-bottom:8px;display:flex;align-items:center;gap:8px}
+.story-body{font-size:12px;color:var(--light);line-height:1.8}
+
+/* ALGO BOX */
+.algo-box{
+  background:linear-gradient(135deg,#14100a,#241c08);
+  border:1px solid rgba(240,195,48,.2);
+  border-radius:14px;padding:20px;margin-top:20px;
+}
+.algo-title{font-size:13px;font-weight:800;color:var(--yellow);margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.algo-steps{display:flex;flex-direction:column;gap:10px}
+.algo-step{display:flex;gap:12px;align-items:flex-start}
+.algo-dot{width:20px;height:20px;border-radius:50%;background:var(--ya);border:1px solid var(--yb);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;color:var(--yellow);flex-shrink:0;margin-top:2px}
+.algo-text{font-size:12px;color:var(--light)}
+
+/* CLOSING */
+.closing{
+  padding:60px 22px 80px;text-align:center;position:relative;overflow:hidden;
+}
+.glow-bg{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:280px;height:280px;background:radial-gradient(circle,rgba(240,195,48,.1),transparent 70%);pointer-events:none}
+.closing-title{font-size:clamp(22px,7.5vw,32px);font-weight:900;line-height:1.2;margin-bottom:14px}
+.closing-title em{color:var(--yellow);font-style:normal}
+.closing-sub{font-size:13px;color:var(--light);margin-bottom:32px;max-width:280px;margin-left:auto;margin-right:auto}
+
+/* FOOTER */
+.footer{padding:24px;border-top:1px solid rgba(255,255,255,.05);text-align:center}
+.footer-logo{font-size:15px;font-weight:900;color:var(--yellow)}
+.footer-sub{font-size:10px;color:var(--gray);margin-top:4px}
+
+/* MOBILE TWEAKS */
+@media(max-width:360px){
+  .hero{padding:90px 16px 64px}
+  .sec{padding:52px 16px}
+  .nav{padding:12px 16px}
+  .funnel-pct{font-size:19px;min-width:44px}
+  .funnel-step{padding:13px 14px;gap:10px}
+  .model-card{padding:16px}
+  .prob-card{padding:15px}
+  .cal-item{gap:8px}
+  .hook-box{padding:8px 10px}
+  .algo-box,.story-box{padding:15px}
+}
+@media(max-width:320px){
+  .hero h1{font-size:26px}
+  .chip .n{font-size:15px}
+  .hero-chips{gap:6px}
+}
+
+/* KEYFRAMES */
+@keyframes fd{from{opacity:0;transform:translateY(-14px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+@keyframes sline{0%{transform:scaleY(0);transform-origin:top}50%{transform:scaleY(1)}100%{transform:scaleY(0);transform-origin:bottom}}
+@keyframes grow{from{width:0}to{}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+@keyframes morph{0%,100%{border-radius:42% 58% 55% 45%/40% 45% 55% 60%}33%{border-radius:65% 35% 40% 60%/55% 30% 70% 45%}66%{border-radius:30% 70% 65% 35%/35% 65% 35% 65%}}
+</style>
+</head>
+<body>
+<div id="prog"></div>
+<canvas id="bg-canvas"></canvas>
+
+<nav class="nav">
+  <div class="nav-logo">⚡ ایستا تجهیز</div>
+  <div class="nav-pill">پروپوزال محتوا</div>
+</nav>
+
+<div class="wrap">
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-badge"><div class="pulse"></div>تحلیل و استراتژی اینستاگرام</div>
+  <h1>پیج شما<br><em>بالاتر از این‌هاست</em></h1>
+  <p class="hero-sub">یک گزارش صادقانه از وضعیت فعلی و مسیر رشد</p>
+  <div class="hero-chips">
+    <div class="chip"><span class="n">۱۲۸۶</span><span class="l">فالوور</span></div>
+    <div class="chip"><span class="n">۴۰۰</span><span class="l">میانگین ویو</span></div>
+    <div class="chip"><span class="n">۱۴۵</span><span class="l">پست</span></div>
+  </div>
+  <div class="scroll-hint"><span>بیشتر</span><div class="scroll-line"></div></div>
+</section>
+
+<div class="div"></div>
+
+<!-- PROBLEMS -->
+<section class="sec rv">
+  <div class="eyebrow">تشخیص مشکل</div>
+  <h2 class="sec-title">چرا ریلزها<br><em>ویو نمی‌گیرند؟</em></h2>
+
+  <div class="prob-grid">
+    <div class="prob-card rv">
+      <div class="prob-tag">مشکل اصلی</div>
+      <div class="prob-title">📄 محتوای کاتالوگ‌محور</div>
+      <div class="prob-body">عکس ثابت محصول + متن انباشته. این فرمت برای اینستاگرام طراحی نشده — الگوریتم آن را نمی‌بیند.</div>
+    </div>
+    <div class="prob-card rv">
+      <div class="prob-tag">مشکل محتوایی</div>
+      <div class="prob-title">🎯 غیاب Hook</div>
+      <div class="prob-body">ثانیه اول تعیین‌کننده است. بدون قلاب، کاربر قبل از ثانیه سوم اسکرول می‌کند.</div>
+    </div>
+    <div class="prob-card rv">
+      <div class="prob-tag">مشکل تولید</div>
+      <div class="prob-title">🎬 کیفیت پایین بصری</div>
+      <div class="prob-body">نورپردازی ضعیف، نبود موشن و فریم‌بندی غیرحرفه‌ای در فضایی که برندها محتوای سینمایی می‌سازند.</div>
+    </div>
+    <div class="prob-card rv">
+      <div class="prob-tag">مشکل استراتژیک</div>
+      <div class="prob-title">👥 فقط برای متخصص</div>
+      <div class="prob-body">محتوا فقط ۵٪ مخاطب را هدف می‌گیرد. ۹۵٪ ظرفیت اینستاگرام دست‌نخورده مانده.</div>
+    </div>
+  </div>
+</section>
+
+<div class="div"></div>
+
+<!-- COMPARE -->
+<section class="sec alt rv">
+  <div class="eyebrow">مقایسه</div>
+  <h2 class="sec-title">وضعیت فعلی<br><em>در برابر پتانسیل واقعی</em></h2>
+
+  <div class="compare-wrap">
+    <div class="cmp-row rv">
+      <div class="cmp-label"><span>ویو میانگین — فعلی</span><strong>~۴۰۰</strong></div>
+      <div class="cmp-track"><div class="cmp-fill blue-fill" style="width:8%"></div></div>
+      <div class="cmp-note">با محتوای کاتالوگ‌محور</div>
+    </div>
+    <div class="cmp-row rv">
+      <div class="cmp-label"><span>ویو میانگین — هدف</span><strong>↑ قابل توجه</strong></div>
+      <div class="cmp-track"><div class="cmp-fill" style="width:72%"></div></div>
+      <div class="cmp-note">با سبک Industrial Entertainment</div>
+    </div>
+    <div class="cmp-row rv">
+      <div class="cmp-label"><span>تکامک — رقیب ایرانی مشابه</span><strong>405K فالوور</strong></div>
+      <div class="cmp-track"><div class="cmp-fill" style="width:100%"></div></div>
+      <div class="cmp-note">همان حوزه، محتوای متفاوت</div>
+    </div>
+  </div>
+</section>
+
+<div class="div"></div>
+
+<!-- STRATEGY FUNNEL -->
+<section class="sec rv">
+  <div class="eyebrow">استراتژی</div>
+  <h2 class="sec-title">چرا محتوا<br><em>به این ترتیب؟</em></h2>
+  <p class="sec-body">هیچ‌کس از خواب بیدار نمی‌شود و می‌گوید «امروز مشخصات کنتاکتور ۴۰ آمپر را مطالعه کنم.» مردم اول جذب می‌شوند — بعد می‌خرند.</p>
+
+  <div class="funnel" style="margin-top:28px">
+    <div class="funnel-step f1 rv">
+      <div class="funnel-pct">۴۰٪</div>
+      <div class="funnel-info">
+        <div class="funnel-name">کنجکاوی‌محور</div>
+        <div class="funnel-desc">Hook قوی — همه را نگه می‌دارد</div>
+      </div>
+      <div class="funnel-bar" style="width:40%;color:var(--yellow)"></div>
+    </div>
+    <div class="funnel-step f2 rv">
+      <div class="funnel-pct">۳۰٪</div>
+      <div class="funnel-info">
+        <div class="funnel-name">آموزشی</div>
+        <div class="funnel-desc">ارزش‌آفرینی — متخصص را قانع می‌کند</div>
+      </div>
+      <div class="funnel-bar" style="width:30%;color:var(--accent2)"></div>
+    </div>
+    <div class="funnel-step f3 rv">
+      <div class="funnel-pct">۲۰٪</div>
+      <div class="funnel-info">
+        <div class="funnel-name">برندینگ</div>
+        <div class="funnel-desc">اعتماد — پشت‌صحنه و تیم</div>
+      </div>
+      <div class="funnel-bar" style="width:20%;color:#4ade80"></div>
+    </div>
+    <div class="funnel-step f4 rv">
+      <div class="funnel-pct">۱۰٪</div>
+      <div class="funnel-info">
+        <div class="funnel-name">معرفی محصول</div>
+        <div class="funnel-desc">وقتی مخاطب آماده است</div>
+      </div>
+      <div class="funnel-bar" style="width:10%;color:#a78bfa"></div>
+    </div>
+  </div>
+</section>
+
+<div class="div"></div>
+
+<!-- CONTENT MODELS -->
+<section class="sec alt2 rv">
+  <div class="eyebrow">مدل‌های محتوایی</div>
+  <h2 class="sec-title">۸ سبک که<br><em>پیج را می‌سازند</em></h2>
+
+  <div class="model-list">
+
+    <div class="model-card rv">
+      <span class="model-num">۰۱</span>
+      <div class="model-title">🎣 قلاب‌های کنجکاوی</div>
+      <div class="hook-box">
+        <div class="hook-bad">❌ این کنتاکتور اشنایدره با مشخصات...</div>
+        <div class="hook-good">✅ این قطعه ۵ میلیونی می‌تونه جلوی سوختن یه موتور ۵۰۰ میلیونی رو بگیره</div>
+      </div>
+      <div class="hook-box">
+        <div class="hook-bad">❌ معرفی بانک خازنی</div>
+        <div class="hook-good">✅ این دستگاه هر ماه داره پول برق کارخانه‌ها رو می‌خوره</div>
+      </div>
+      <div class="tags"><span class="tag ty">ویو بالا</span><span class="tag tp">ویروسی</span></div>
+    </div>
+
+    <div class="model-card rv">
+      <span class="model-num">۰۲</span>
+      <div class="model-title">💥 Myth Buster</div>
+      <div class="hook-box">
+        <div class="hook-good">✅ بزرگ‌ترین اشتباه در انتخاب فیوز</div>
+      </div>
+      <div class="hook-box">
+        <div class="hook-good">✅ ۳ باور اشتباه درباره تابلو برق</div>
+      </div>
+      <div class="tags"><span class="tag ty">Save محور</span><span class="tag tb">کات سریع</span><span class="tag tp">تکست موشن</span></div>
+    </div>
+
+    <div class="model-card rv">
+      <span class="model-num">۰۳</span>
+      <div class="model-title">🔬 Discovery Channel</div>
+      <div class="hook-box">
+        <div class="hook-good">✅ داخل این قطعه چی هست؟ — ماکروشات + موشن گرافیک + انفجار سه‌بعدی</div>
+      </div>
+      <div class="tags"><span class="tag ty">ماکرو شات</span><span class="tag tb">AI سه‌بعدی</span><span class="tag tg">عمومی‌پسند</span></div>
+    </div>
+
+    <div class="model-card rv">
+      <span class="model-num">۰۴</span>
+      <div class="model-title">🤖 AI Storytelling</div>
+      <div class="hook-box">
+        <div class="hook-good">✅ «اگر برق صنعتی وجود نداشت...» → AI: کارخانه خاموش، شهر تاریک → کات: همه به خاطر قطعاتی که کسی به آن‌ها توجه نمی‌کند</div>
+      </div>
+      <div class="tags"><span class="tag tp">Kling · Runway</span><span class="tag ty">Retention بالا</span></div>
+    </div>
+
+    <div class="model-card rv">
+      <span class="model-num">۰۵</span>
+      <div class="model-title">⚖️ مقایسه سینمایی</div>
+      <div class="hook-box">
+        <div class="hook-good">✅ اشنایدر در برابر نمونه متفرقه — نور دراماتیک + اسلوموشن. شبیه تبلیغات اپل، برای تجهیزات صنعتی ایران اول بار.</div>
+      </div>
+      <div class="tags"><span class="tag ty">اسلوموشن</span><span class="tag tb">نور دراماتیک</span></div>
+    </div>
+
+    <div class="model-card rv">
+      <span class="model-num">۰۶</span>
+      <div class="model-title">🏭 پشت‌پرده صنعت</div>
+      <div class="hook-box">
+        <div class="hook-good">✅ داخل تابلو برق یک کارخانه چه خبر است؟</div>
+      </div>
+      <div class="hook-box">
+        <div class="hook-good">✅ برق آسانسور چگونه کنترل می‌شود؟</div>
+      </div>
+      <div class="tags"><span class="tag tg">عمومی‌پسند</span><span class="tag ty">برندینگ</span></div>
+    </div>
+
+    <div class="model-card rv">
+      <span class="model-num">۰۷</span>
+      <div class="model-title">💎 فیلمبرداری لوکس محصول</div>
+      <div class="hook-box">
+        <div class="hook-good">✅ بک‌گراند مشکی + نور خطی + اسلایدر + موشن گرافیک مینیمال. مثل تبلیغ ساعت رولکس — برای تجهیزات صنعتی.</div>
+      </div>
+      <div class="tags"><span class="tag ty">پریمیوم</span><span class="tag tb">بک‌گراند مشکی</span></div>
+    </div>
+
+    <div class="model-card rv">
+      <span class="model-num">۰۸</span>
+      <div class="model-title">🌐 AI + موشن گرافیک کامل</div>
+      <div class="hook-box">
+        <div class="hook-good">✅ برق از نیروگاه تا کارخانه چطور می‌رسد؟ — همه چیز AI: Midjourney + Kling + After Effects</div>
+      </div>
+      <div class="tags"><span class="tag tp">بدون فیلمبرداری</span><span class="tag ty">مستندگونه</span></div>
+    </div>
+
+  </div>
+</section>
+
+<div class="div"></div>
+
+<!-- PRODUCTION -->
+<section class="sec rv">
+  <div class="eyebrow">روش تولید</div>
+  <h2 class="sec-title">سه مسیر<br><em>برای ساخت محتوا</em></h2>
+
+  <div class="prod-grid">
+    <div class="prod-card pc1 rv">
+      <div class="prod-icon">🎬</div>
+      <div class="prod-title">فیلمبرداری + ادیت حرفه‌ای</div>
+    </div>
+    <div class="prod-card pc2 rv">
+      <div class="prod-icon">🤖</div>
+      <div class="prod-title">تولید صفر تا ۱۰۰ با هوش مصنوعی</div>
+    </div>
+    <div class="prod-card pc3 rv">
+      <div class="prod-icon">⚡</div>
+      <div class="prod-title">ترکیب فیلمبرداری + هوش مصنوعی</div>
+    </div>
+  </div>
+</section>
+
+<div class="div"></div>
+
+<!-- CALENDAR -->
+<section class="sec alt rv">
+  <div class="eyebrow">برنامه محتوا</div>
+  <h2 class="sec-title">۱۲ محتوا<br><em>در ماه اول</em></h2>
+  <p class="sec-body">سه محتوا در هفته — با سناریوهای متنوع برای تست بهترین فرمت برای مخاطب ایستا تجهیز.</p>
+
+  <div class="cal">
+
+    <div class="cal-week rv">
+      <div class="cal-wlabel">هفته اول — شروع با Hook</div>
+      <div class="cal-item">
+        <div class="cal-num">۰۱</div>
+        <div>
+          <div class="cal-topic">این قطعه ۵ میلیونی جلوی چه فاجعه‌ای را می‌گیرد؟</div>
+          <div class="cal-hint">مدل کنجکاوی — معرفی کنتاکتور</div>
+        </div>
+      </div>
+      <div class="cal-item">
+        <div class="cal-num">۰۲</div>
+        <div>
+          <div class="cal-topic">بزرگ‌ترین اشتباه در انتخاب فیوز</div>
+          <div class="cal-hint">Myth Buster — کات سریع + تکست موشن</div>
+        </div>
+      </div>
+      <div class="cal-item">
+        <div class="cal-num">۰۳</div>
+        <div>
+          <div class="cal-topic">نقش بانک خازنی در قبض برق کارخانه</div>
+          <div class="cal-hint">آموزشی — اینفوگرافیک فنی</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="cal-week rv">
+      <div class="cal-wlabel">هفته دوم — Discovery</div>
+      <div class="cal-item">
+        <div class="cal-num">۰۴</div>
+        <div>
+          <div class="cal-topic">داخل این قطعه چی هست؟ — باز کردن فیلتر خازنی</div>
+          <div class="cal-hint">Discovery — ماکروشات + موشن گرافیک</div>
+        </div>
+      </div>
+      <div class="cal-item">
+        <div class="cal-num">۰۵</div>
+        <div>
+          <div class="cal-topic">این دستگاه هر ماه داره پول برق کارخانه رو می‌خوره</div>
+          <div class="cal-hint">Hook کنجکاوی — بانک خازنی</div>
+        </div>
+      </div>
+      <div class="cal-item">
+        <div class="cal-num">۰۶</div>
+        <div>
+          <div class="cal-topic">داخل تابلو برق یک کارخانه چه خبر است؟</div>
+          <div class="cal-hint">پشت‌پرده صنعت — فیلمبرداری محیطی</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="cal-week rv">
+      <div class="cal-wlabel">هفته سوم — مقایسه و برندینگ</div>
+      <div class="cal-item">
+        <div class="cal-num">۰۷</div>
+        <div>
+          <div class="cal-topic">اشنایدر در برابر نمونه متفرقه — آزمون واقعی</div>
+          <div class="cal-hint">مقایسه سینمایی — نور دراماتیک + اسلوموشن</div>
+        </div>
+      </div>
+      <div class="cal-item">
+        <div class="cal-num">۰۸</div>
+        <div>
+          <div class="cal-topic">۳ باور اشتباه درباره تابلو برق</div>
+          <div class="cal-hint">Myth Buster — Save محور</div>
+        </div>
+      </div>
+      <div class="cal-item">
+        <div class="cal-num">۰۹</div>
+        <div>
+          <div class="cal-topic">چرا ارزان خریدن تجهیزات برق گاهی صدها میلیون ضرر دارد</div>
+          <div class="cal-hint">کنجکاوی + آموزشی — داده واقعی</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="cal-week rv">
+      <div class="cal-wlabel">هفته چهارم — AI و لوکس</div>
+      <div class="cal-item">
+        <div class="cal-num">۱۰</div>
+        <div>
+          <div class="cal-topic">اگر برق صنعتی وجود نداشت...</div>
+          <div class="cal-hint">AI Storytelling — Kling + Runway + After Effects</div>
+        </div>
+      </div>
+      <div class="cal-item">
+        <div class="cal-num">۱۱</div>
+        <div>
+          <div class="cal-topic">کنتاکتور از نزدیک — تبلیغ لوکس</div>
+          <div class="cal-hint">فیلمبرداری لوکس — بک‌گراند مشکی + نور خطی</div>
+        </div>
+      </div>
+      <div class="cal-item">
+        <div class="cal-num">۱۲</div>
+        <div>
+          <div class="cal-topic">برق از نیروگاه تا کارخانه چطور می‌رسد؟</div>
+          <div class="cal-hint">AI کامل — Midjourney + After Effects</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="story-box rv">
+    <div class="story-title">📱 استوری روزانه</div>
+    <div class="story-body">روزانه ۳ تا ۵ استوری — نکات فنی کوتاه، پشت‌صحنه تولید، نظرسنجی، اخبار محصول و تعامل با مخاطب.</div>
+  </div>
+
+  <div class="algo-box rv">
+    <div class="algo-title">⚙️ بهینه‌سازی الگوریتمی پیوسته</div>
+    <div class="algo-steps">
+      <div class="algo-step">
+        <div class="algo-dot">۱</div>
+        <div class="algo-text">بعد از هر انتشار، داده‌های ویو، Save، Share و Reach بررسی می‌شود</div>
+      </div>
+      <div class="algo-step">
+        <div class="algo-dot">۲</div>
+        <div class="algo-text">الگوی موفق شناسایی و در محتوای بعدی تقویت می‌شود</div>
+      </div>
+      <div class="algo-step">
+        <div class="algo-dot">۳</div>
+        <div class="algo-text">استراتژی هر هفته بر اساس داده‌های واقعی تنظیم می‌شود</div>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+<div class="div"></div>
+
+<!-- CLOSING -->
+<section class="closing rv">
+  <div class="glow-bg"></div>
+  <div class="eyebrow" style="text-align:center">قدم بعدی</div>
+  <h2 class="closing-title">ایستا تجهیز<br><em>محصول دارد</em><br>فقط یک صدا کم است</h2>
+  <p class="closing-sub">تنوع محصول، برندهای معتبر و دانش فنی — همه وجود دارد. کافی است مخاطب این ارزش را ببیند.</p>
+</section>
+
+<footer class="footer">
+  <div class="footer-logo">⚡ ایستا تجهیز</div>
+  <div class="footer-sub">پروپوزال استراتژی محتوای اینستاگرام — ۱۴۰۵</div>
+</footer>
+
+</div><!-- /wrap -->
+
+<script>
+/* ── BACKGROUND: GEOMETRIC MORPHING SHAPES ── */
+const canvas = document.getElementById('bg-canvas');
+const ctx = canvas.getContext('2d');
+
+function resize(){canvas.width=window.innerWidth;canvas.height=window.innerHeight}
+resize();
+window.addEventListener('resize',resize);
+
+class Orb {
+  constructor(){this.reset(true)}
+  reset(init){
+    this.x = Math.random()*canvas.width;
+    this.y = init ? Math.random()*canvas.height : canvas.height+80;
+    this.r = 40+Math.random()*90;
+    this.vx = (Math.random()-.5)*0.3;
+    this.vy = -0.15-Math.random()*0.25;
+    this.alpha = 0.04+Math.random()*0.09;
+    this.color = Math.random()>.55 ? '#f0c330' : '#2a4fa0';
+    this.phase = Math.random()*Math.PI*2;
+    this.speed = 0.006+Math.random()*0.008;
+  }
+  draw(t){
+    this.phase+=this.speed;
+    this.x+=this.vx; this.y+=this.vy;
+    if(this.y<-this.r*2)this.reset(false);
+    const wobble = Math.sin(this.phase)*0.18;
+    ctx.save();
+    ctx.globalAlpha=this.alpha;
+    const g=ctx.createRadialGradient(this.x,this.y,0,this.x,this.y,this.r);
+    g.addColorStop(0,this.color);
+    g.addColorStop(1,'transparent');
+    ctx.fillStyle=g;
+    ctx.beginPath();
+    ctx.ellipse(this.x,this.y,this.r*(1+wobble),this.r*(1-wobble*0.6),this.phase,0,Math.PI*2);
+    ctx.fill();
+    ctx.restore();
+  }
+}
+
+class Ring {
+  constructor(){this.reset(true)}
+  reset(init){
+    this.x=Math.random()*canvas.width;
+    this.y=init?Math.random()*canvas.height:canvas.height+60;
+    this.r=20+Math.random()*60;
+    this.vy=-0.1-Math.random()*0.2;
+    this.vx=(Math.random()-.5)*0.2;
+    this.alpha=0.06+Math.random()*0.1;
+    this.color=Math.random()>.5?'#f0c330':'#4f8ef7';
+    this.lw=0.5+Math.random()*1.5;
+    this.rot=Math.random()*Math.PI*2;
+    this.rotSpeed=(Math.random()-.5)*0.008;
+  }
+  draw(){
+    this.x+=this.vx; this.y+=this.vy; this.rot+=this.rotSpeed;
+    if(this.y<-this.r*2)this.reset(false);
+    ctx.save();
+    ctx.globalAlpha=this.alpha;
+    ctx.strokeStyle=this.color;
+    ctx.lineWidth=this.lw;
+    ctx.translate(this.x,this.y);
+    ctx.rotate(this.rot);
+    ctx.beginPath();
+    ctx.arc(0,0,this.r,0,Math.PI*2);
+    ctx.stroke();
+    // inner ring
+    ctx.globalAlpha=this.alpha*0.5;
+    ctx.beginPath();
+    ctx.arc(0,0,this.r*0.55,0,Math.PI*2);
+    ctx.stroke();
+    ctx.restore();
+  }
+}
+
+class Line {
+  constructor(){this.reset(true)}
+  reset(init){
+    this.x=Math.random()*canvas.width;
+    this.y=init?Math.random()*canvas.height:canvas.height+20;
+    this.len=20+Math.random()*50;
+    this.angle=-Math.PI/2+(Math.random()-.5)*0.6;
+    this.vy=-0.2-Math.random()*0.3;
+    this.vx=(Math.random()-.5)*0.15;
+    this.alpha=0.06+Math.random()*0.12;
+    this.color='#f0c330';
+    this.lw=0.4+Math.random()*0.8;
+  }
+  draw(){
+    this.x+=this.vx; this.y+=this.vy;
+    if(this.y<-this.len)this.reset(false);
+    ctx.save();
+    ctx.globalAlpha=this.alpha;
+    ctx.strokeStyle=this.color;
+    ctx.lineWidth=this.lw;
+    ctx.beginPath();
+    ctx.moveTo(this.x,this.y);
+    ctx.lineTo(this.x+Math.cos(this.angle)*this.len,this.y+Math.sin(this.angle)*this.len);
+    ctx.stroke();
+    ctx.restore();
+  }
+}
+
+const orbs = Array.from({length:10},()=>new Orb());
+const rings = Array.from({length:12},()=>new Ring());
+const lines = Array.from({length:18},()=>new Line());
+
+function loop(t){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  orbs.forEach(o=>o.draw(t));
+  rings.forEach(r=>r.draw());
+  lines.forEach(l=>l.draw());
+  requestAnimationFrame(loop);
+}
+requestAnimationFrame(loop);
+
+/* PROGRESS */
+const prog=document.getElementById('prog');
+window.addEventListener('scroll',()=>{
+  const pct=window.scrollY/(document.body.scrollHeight-window.innerHeight)*100;
+  prog.style.width=pct+'%';
+});
+
+/* REVEAL */
+const rvs=document.querySelectorAll('.rv');
+const obs=new IntersectionObserver(entries=>{
+  entries.forEach((e,i)=>{
+    if(e.isIntersecting)setTimeout(()=>e.target.classList.add('on'),i*50);
+  });
+},{threshold:0.07});
+rvs.forEach(r=>obs.observe(r));
+</script>
+</body>
+</html>
